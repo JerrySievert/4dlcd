@@ -1,0 +1,55 @@
+#!/usr/bin/env node
+
+var fs   = require('fs');
+
+var bmp = fs.readFileSync(process.argv[2]);
+console.dir(bmp);
+if (bmp.length < 56) {
+  console.warn("That image is suspiciously small.");
+  process.exit(1);
+}
+
+// check the bits per pixel, currently only 24 is handled
+if (bmp[28] !== 24) {
+  console.warn("Sorry, only 24 bit BMPs are supported.");
+  console.warn(bmp[28]);
+  process.exit(1);
+}
+
+
+var sliced = bmp.slice(56);
+
+var x = (bmp[17] * 256) + bmp[18];
+var y = (bmp[21] * 256) + bmp[22];
+
+var buffer = new Buffer((x * y * 2) + 6);
+buffer[0] = bmp[17];
+buffer[1] = bmp[18];
+buffer[2] = bmp[21];
+buffer[3] = bmp[22];
+buffer[4] = 0;
+buffer[5] = 16;
+
+
+function rgbToBuffer (r, g, b) {
+  return int16ToBuffer(((r>>3)<<11)+((g>>2)<<5)+(b>>3));
+}
+
+function int16ToBuffer (value) {
+  var buffer = new Buffer(2);
+  
+  buffer[0] = Math.floor(Number(value / 256));
+  buffer[1] = Math.floor(Number(value % 256));
+  //console.dir(buffer);
+  return buffer;
+}
+console.log(sliced.length);
+
+for (var i = 0, j = 6; i < sliced.length - 3; i += 3, j += 2) {
+  var rgb = rgbToBuffer(sliced[i], sliced[i + 2], sliced[i + 1]);
+  buffer[j] = rgb[0];
+  buffer[j+1] = rgb[1];
+}
+
+fs.writeFileSync(process.argv[3], buffer);
+//console.dir(buffer);
