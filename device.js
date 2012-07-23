@@ -25,7 +25,7 @@ function Device (serialPort) {
   var self = this;
 
   serialPort.on('data', function parse (data) {
-    console.dir(data);
+    //console.dir(data);
     for (var i = 0; i < data.length; i++) {
       self.buffer[self.current] = data[i];
       self.current++;
@@ -200,7 +200,7 @@ Device.prototype.drawRectangle = function (x1, y1, x2, y2, r, g, b, callback) {
 };
 
 Device.prototype.setPenSize = function (pen, callback) {
-  this.directWrite(callbac, 1, [ 0x70, pen ]);
+  this.directWrite(callback, 1, [ 0x70, pen ]);
 };
 
 Device.prototype.drawStringOfAsciiText = function (column, row, font, r, g, b, string, callback) {
@@ -235,5 +235,47 @@ Device.prototype.drawImageIconFromCard = function (filename, x, y, callback) {
   
   this.directWrite(callback, 1, cmd);
 };
+
+Device.prototype.readFileFromDisk = function (filename, callback) {
+  var size;
+  var buffer;
+  var current;
+
+  var self = this;
+
+
+  function fileDataCallback (err, data) {
+    for (var i = 0; i < data.length; i++) {
+      buffer[current++] = data[i];
+    }
+    
+    if (size === current) {
+      callback(undefined, buffer.slice(0, buffer.length - 1));
+    } else {
+      self.directWrite(fileDataCallback, (size - current) > 10 ? 10 : (size - current), [ 0x06 ]);
+    }
+  }
+
+  function fileSizeCallback (err, data) {
+    size = (data[0] * (256 * 256 * 256)) + (data[1] * (256 * 256)) + (data[2] * 256) + data[3] + 1;
+    
+    if (size === 0) {
+      callback('unknown file');
+    } else {
+      buffer = new Buffer(size);
+      current = 0;
+      self.directWrite(fileDataCallback, 10, [ 0x06 ]);
+    }
+  }
+  
+  var cmd = [ 0x40, 0x61, 0x0a ];
+  for (var i = 0; i < filename.length; i++) {
+    cmd.push(filename.charCodeAt(i));
+  }
+  cmd.push(0);
+  
+  this.directWrite(fileSizeCallback, 4, cmd);
+};
+
 
 exports.Device = Device;
