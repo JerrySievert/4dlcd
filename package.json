@@ -2,7 +2,7 @@
   "name": "4dlcd",
   "version": "0.1.0",
   "description": "An implementation of the 4D LCD commands",
-  "main": "index.js",
+  "main": "device.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
