@@ -1,6 +1,5 @@
 var util      = require('util'),
-    events    = require('events'),
-    BitWriter = require('bitwriter');
+    events    = require('events');
 
 
 function rgbToBuffer (r, g, b) {
@@ -25,7 +24,7 @@ function Device (serialPort) {
   var self = this;
 
   serialPort.on('data', function parse (data) {
-    //console.dir(data);
+    console.dir(data);
     for (var i = 0; i < data.length; i++) {
       self.buffer[self.current] = data[i];
       self.current++;
@@ -139,6 +138,11 @@ Device.prototype.replaceBackgroundColour = function (r, g, b, callback) {
   this.directWrite(callback, 1, [ 0x42, color[0], color[1] ]);
 };
 
+Device.prototype.setBackgroundColour = function (r, g, b, callback) {
+  var color = rgbToBuffer(r, g, b);
+  this.directWrite(callback, 1, [ 0x4b, color[0], color[1] ]);
+};
+
 Device.prototype.clearScreen = function (callback) {
   this.directWrite(callback, 1, [ 0x45 ]);
 };
@@ -245,6 +249,7 @@ Device.prototype.readFileFromDisk = function (filename, callback) {
 
 
   function fileDataCallback (err, data) {
+    console.log("fileDataCallback");
     for (var i = 0; i < data.length; i++) {
       buffer[current++] = data[i];
     }
@@ -252,6 +257,7 @@ Device.prototype.readFileFromDisk = function (filename, callback) {
     if (size === current) {
       callback(undefined, buffer.slice(0, buffer.length - 1));
     } else {
+      console.log("acknowledging: " + size + ", " + current);
       self.directWrite(fileDataCallback, (size - current) > 10 ? 10 : (size - current), [ 0x06 ]);
     }
   }
@@ -264,8 +270,10 @@ Device.prototype.readFileFromDisk = function (filename, callback) {
     } else {
       buffer = new Buffer(size);
       current = 0;
-      self.directWrite(fileDataCallback, 10, [ 0x06 ]);
+      console.log((size < 10) ? size + 1 : 10);
+      self.directWrite(fileDataCallback, (size < 10) ? size : 10, [ 0x06 ]);
     }
+    console.log("size = " + size);
   }
   
   var cmd = [ 0x40, 0x61, 0x0a ];
