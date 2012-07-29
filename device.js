@@ -110,6 +110,7 @@ Device.BAUD_9600        = 6;
 Device.BAUD_19200       = 8;
 Device.BAUD_57600       = 0x0c;
 Device.BAUD_115200      = 0x0d;
+Device.BAUD_128000      = 0x0e;
 Device.BAUD_256000      = 0x0f;
 
 // pen size
