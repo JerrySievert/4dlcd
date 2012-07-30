@@ -25,7 +25,8 @@ function Device (serialPort) {
   var self = this;
 
   serialPort.on('data', function parse (data) {
-    console.dir(data);
+    //console.dir(data);
+    console.log("receiving data");
     for (var i = 0; i < data.length; i++) {
       self.buffer[self.current] = data[i];
       self.current++;
@@ -64,7 +65,8 @@ function Device (serialPort) {
   });
   
   self.on('response', function () {
-    if (self.commands.length) {
+    if (self.waitfor.length === 0 && self.commands.length) {
+      console.log("calling command");
       var command = self.commands.shift();
       self.callbacks.push(command.callback);
       self.waitfor.push(command.waitfor);
@@ -128,7 +130,9 @@ Device.PEN_SOLID        = 0;
 Device.PEN_LINE         = 1;
 
 Device.prototype.queue = function (command) {
-  if (this.commands.length === 0) {
+  if (this.waitfor.length === 0) {
+    console.log("calling command (queue)");
+    
     this.callbacks.push(command.callback);
     this.waitfor.push(command.waitfor);
     this.serialPort.write(command.buffer);
