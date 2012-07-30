@@ -19,6 +19,7 @@ function Device (serialPort) {
   this.serialPort = serialPort;
   this.callbacks  = [ ];
   this.waitfor    = [ ];
+  this.commands   = [ ];
   this.current    = 0;
   this.buffer     = new Buffer(1024);
   var self = this;
@@ -59,7 +60,16 @@ function Device (serialPort) {
       return;
     }
     self.current = 0;
-
+    self.emit('response');
+  });
+  
+  self.on('response', function () {
+    if (self.commands.length) {
+      var command = self.commands.shift();
+      self.callbacks.push(command.callback);
+      self.waitfor.push(command.waitfor);
+      self.serialPort.write(command.buffer);
+    }
   });
 }
 
@@ -117,6 +127,15 @@ Device.BAUD_256000      = 0x0f;
 Device.PEN_SOLID        = 0;
 Device.PEN_LINE         = 1;
 
+Device.prototype.queue = function (command) {
+  if (this.commands.length === 0) {
+    this.callbacks.push(command.callback);
+    this.waitfor.push(command.waitfor);
+    this.serialPort.write(command.buffer);
+  } else {
+    this.commands.push(command);
+  }
+};
 
 Device.prototype.defaultCallback = function (err, data) {
   console.dir(data);
@@ -153,10 +172,10 @@ Device.prototype.controlFunction = function (mode, value, callback) {
 };
 
 Device.prototype.directWrite = function (callback, waitfor, command) {
-  this.callbacks.push(callback);
-  this.waitfor.push(waitfor);
+  //this.callbacks.push(callback);
+  //this.waitfor.push(waitfor);
 
-  this.serialPort.write(new Buffer(command));
+  this.queue({ callback: callback, waitfor: waitfor, buffer: new Buffer(command) });
 };
 
 Device.prototype.drawImage65k = function (x, y, w, h, data, callback) {
