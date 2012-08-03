@@ -4,7 +4,7 @@
   "description": "An implementation of the 4D LCD commands",
   "main": "device.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vows --spec"
   },
   "devDependencies": {
     "vows": "~0.6.3"
