@@ -1,7 +1,7 @@
 {
   "name": "4dlcd",
   "version": "0.1.0",
-  "description": "An implementation of the 4D LCD commands",
+  "description": "An implementation of the 4D SGC/Picasso development environment",
   "main": "device.js",
   "scripts": {
     "test": "vows --spec"

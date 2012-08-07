@@ -126,6 +126,15 @@ Device.BAUD_256000      = 0x0f;
 Device.PEN_SOLID        = 0;
 Device.PEN_LINE         = 1;
 
+// touch modes
+Device.TOUCH_ANY        = 0;
+Device.TOUCH_PRESS      = 1;
+Device.TOUCH_RELEASE    = 2;
+Device.TOUCH_MOVING     = 3;
+Device.TOUCH_STATUS     = 4;
+Device.TOUCH_COORDINATES = 5;
+
+
 Device.prototype.queue = function (command) {
   if (this.waitfor.length === 0) {
     
@@ -259,6 +268,10 @@ Device.prototype.drawImageIconFromCard = function (filename, x, y, callback) {
   cmd.push(0);
   
   this.directWrite(callback, 1, cmd);
+};
+
+Device.prototype.getTouchCoordinates = function (mode, callback) {
+  this.directWrite(callback, 4, new Buffer([ 0x6f, mode ]));
 };
 
 Device.prototype.readFileFromDisk = function (filename, callback) {
