@@ -270,6 +270,17 @@ Device.prototype.drawImageIconFromCard = function (filename, x, y, callback) {
   this.directWrite(callback, 1, cmd);
 };
 
+Device.prototype.playAudioWavFromCard = function (option, filename, callback) {
+  var cmd = [ 0x40, 0x6d, option ];
+  for (var i = 0; i < filename.length; i++) {
+    cmd.push(filename.charCodeAt(i));
+  }
+  cmd.push(0);
+  
+  this.directWrite(callback, 1, cmd);
+};
+
+
 Device.prototype.getTouchCoordinates = function (mode, callback) {
   this.directWrite(callback, 4, new Buffer([ 0x6f, mode ]));
 };
