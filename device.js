@@ -248,6 +248,20 @@ Device.prototype.drawStringOfAsciiText = function (column, row, font, r, g, b, s
   this.directWrite(callback, 1, cmd);
 };
 
+Device.prototype.drawStringOfAsciiTextGfx = function (x, y, font, r, g, b, width, height, string, callback) {
+  var c = rgbToBuffer(r, g, b);
+  var x1 = int16ToBuffer(x);
+  var y1 = int16ToBuffer(y);
+  
+  var cmd = [ 0x53, x1[0], x1[1], y1[0], y1[1], font, c[0], c[1] ];
+  for (var i = 0; i < string.length; i++) {
+    cmd.push(string.charCodeAt(i));
+  }
+  cmd.push(0);
+
+  this.directWrite(callback, 1, cmd);
+};
+
 Device.prototype.drawImageIconFromCard = function (filename, x, y, callback) {
   var x1 = int16ToBuffer(x);
   var y1 = int16ToBuffer(y);
