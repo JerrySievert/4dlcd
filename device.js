@@ -253,7 +253,7 @@ Device.prototype.drawStringOfAsciiTextGfx = function (x, y, font, r, g, b, width
   var x1 = int16ToBuffer(x);
   var y1 = int16ToBuffer(y);
   
-  var cmd = [ 0x53, x1[0], x1[1], y1[0], y1[1], font, c[0], c[1] ];
+  var cmd = [ 0x53, x1[0], x1[1], y1[0], y1[1], font, c[0], c[1], width, height ];
   for (var i = 0; i < string.length; i++) {
     cmd.push(string.charCodeAt(i));
   }
