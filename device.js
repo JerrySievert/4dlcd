@@ -30,12 +30,7 @@ function Device (serialPort) {
       self.current++;
     }
 
-/*    if (self.waitfor.length === 0) {
-      console.warn("received spurious data");
-      console.dir(data);
-      return;
-    }
-*/
+
     var waitfor = self.waitfor.shift();
     if (self.current < waitfor) {
       self.waitfor.unshift(waitfor);

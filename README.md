@@ -54,22 +54,45 @@ Version returns a Buffer containing the version information of the connected dev
 * hardware_rev
 * firmware_rev
 * horizontal_res
-** 0x28 : 128 pixels
-** 0x32: 320 pixels
-** 0x60 : 160 pixels
-** 0x64 : 64 pixels
-** 0x76 : 176 pixels
-** 0x96 : 96 pixels
-** 0xFF : Unknown
+  * 0x28 : 128 pixels
+  * 0x32: 320 pixels
+  * 0x60 : 160 pixels
+  * 0x64 : 64 pixels
+  * 0x76 : 176 pixels
+  * 0x96 : 96 pixels
+  * 0xFF : Unknown
 * vertical_res
-** 0x22 : 220 pixels
-** 0x24 : 240 pixels
-** 0x28 : 128 pixels
-** 0x32 : 320 pixels
-** 0x60 : 160 pixels
-** 0x64 : 64 pixels
-** 0x76 : 176 pixels
-** 0x96 : 96 pixels
-** 0xFF : Unknown
+  * 0x22 : 220 pixels
+  * 0x24 : 240 pixels
+  * 0x28 : 128 pixels
+  * 0x32 : 320 pixels
+  * 0x60 : 160 pixels
+  * 0x64 : 64 pixels
+  * 0x76 : 176 pixels
+  * 0x96 : 96 pixels
+  * 0xFF : Unknown
 
+### replaceBackgroundColour(r, g, b, /* optional callback */)
+
+Changes the background color of the screen immediately.
+
+#### Example
+
+    lcd.replaceBackgroundColour(255, 0, 0, function (err, status) {
+      console.dir(status); // Buffer <0x06>
+    });
+
+### clearScreen(/* optional callback */)
+
+Clears the screen.
+
+#### Example
+
+    lcd.clearScreen(function (err, status) {
+      console.dir(status); // Buffer <0x06>
+    });
+
+### controlFunction(mode, value, /* optional callback */)
+
+Sends a control function to the screen.
 
