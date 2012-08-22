@@ -96,3 +96,11 @@ Clears the screen.
 
 Sends a control function to the screen.
 
+### drawImage65k(x, y, width, height, data, /* optional callback */)
+
+Draws an image, specified in the data argument (16bit - 565 format) at the x and y coordinates specified.
+
+#### Example
+
+    lcd.drawImage65k(0, 0, 1, 2, new Buffer([ 0xff, 0xff, 0xff, 0xff ]));
+

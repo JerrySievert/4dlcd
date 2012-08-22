@@ -228,6 +228,15 @@ Device.prototype.drawRectangle = function (x1, y1, x2, y2, r, g, b, callback) {
   this.directWrite(callback, 1, [ 0x72, x1[0], x1[1], y1[0], y1[1], x2[0], x2[1], y2[0], y2[1], c[0], c[1] ]);
 };
 
+Device.prototype.drawPixel = function (x, y, r, g, b, callback) {
+  x1 = int16ToBuffer(x1);
+  y1 = int16ToBuffer(y1);
+
+  var cmd = [ 0x50, x1[0], x1[1], y1[0], y1[1] ];
+
+  this.directWrite(callback, 1, cmd);
+};
+
 Device.prototype.setPenSize = function (pen, callback) {
   this.directWrite(callback, 1, [ 0x70, pen ]);
 };
