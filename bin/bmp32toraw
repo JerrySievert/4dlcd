@@ -17,7 +17,7 @@ if (bmp[28] !== 24) {
 }
 
 
-var sliced = bmp.slice(56);
+var sliced = bmp.slice(57);
 
 var x = (bmp[17] * 256) + bmp[18];
 var y = (bmp[21] * 256) + bmp[22];

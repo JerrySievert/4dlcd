@@ -184,7 +184,7 @@ Device.prototype.directWrite = function (callback, waitfor, command) {
 };
 
 Device.prototype.drawImage65k = function (x, y, w, h, data, callback) {
-  var command = new Buffer(data.length + 10);
+  var command = [ ];
   
   var bx = int16ToBuffer(x);
   var by = int16ToBuffer(y);
